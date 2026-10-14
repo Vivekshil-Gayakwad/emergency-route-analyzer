@@ -1,6 +1,17 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+// Support multiple environment variable names and handle missing /api automatically
+let rawBase = (
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_BACKEND_URL ||
+  import.meta.env.VITE_API_URL ||
+  'http://localhost:8000/api'
+).trim();
+
+if (!rawBase.endsWith('/api') && !rawBase.endsWith('/api/')) {
+  rawBase = rawBase.replace(/\/+$/, '') + '/api';
+}
+const API_BASE = rawBase;
 
 // Create axios instance
 const api = axios.create({
